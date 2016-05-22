@@ -228,9 +228,10 @@ object Lista {
 
   /**
     * Performs a zip between two given lists
+    *
     * @param ls first source list
     * @param rs second source list
-    * @param f function to combine elements of the given list
+    * @param f  function to combine elements of the given list
     * @tparam A type of first source list elements
     * @tparam B type of second source list elements
     * @tparam C type of result list elements
@@ -240,6 +241,21 @@ object Lista {
     case (Nil, _) => Nil
     case (_, Nil) => Nil
     case (Cons(x, xs), Cons(y, ys)) => Cons(f(x, y), zipWith(xs, ys)(f))
+  }
+
+  /**
+    * Performs a quicksort on the given list
+    * NOTE: the implementation uses the first element as pivot,
+    * which will give a worst case performance on ordered lists.
+    *
+    * @param ls   source list
+    * @param less function to check if an element is ordered lower than other
+    * @tparam A type of source list elements
+    * @return ordered list
+    */
+  def quicksort[A](ls: Lista[A])(less: (A, A) => Boolean): Lista[A] = ls match {
+    case Nil => Nil
+    case Cons(x, xs) => concat(quicksort(filter(xs)(less(_, x)))(less), Cons(x, quicksort(filter(xs)(!less(_, x)))(less)))
   }
 }
 
@@ -253,6 +269,7 @@ object PruebaLista {
     println(Lista.contains(Lista(1, 2, 3), 2))
     println(Lista.contains(Lista(1, 2, 3), 4))
     println(Lista.head(Lista(1, 2, 3)))
-    println(Lista.zipWith(Lista(1,2,3),Lista('a','b','c'))((_,_)))
+    println(Lista.zipWith(Lista(1, 2, 3), Lista('a', 'b', 'c'))((_, _)))
+    println(Lista.quicksort(Lista(2,5,4,3,1,6))(_<_))
   }
 }
